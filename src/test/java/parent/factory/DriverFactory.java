@@ -3,6 +3,7 @@ package parent.factory;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class DriverFactory {
@@ -12,7 +13,12 @@ public class DriverFactory {
         switch (browser.toLowerCase()) {
             case "chrome" -> {
                 WebDriverManager.chromedriver().setup();
-                driver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions(); 
+                options.addArguments("--headless"); // run without GUI 
+                options.addArguments("--no-sandbox"); // required in CI 
+                options.addArguments("--disable-dev-shm-usage"); // avoid shared memory issues 
+                options.addArguments("--disable-gpu"); // safe for Linux agents 
+                return new ChromeDriver(options);
             }
             case "firefox" -> {
                 WebDriverManager.firefoxdriver().setup();
